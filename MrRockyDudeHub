@@ -1,1 +1,17 @@
-@/home/workdir/artifacts/MrRockyDudeHub.lua
+-- MrRockyDudeHub loader (multi-part safe)
+local base="https://raw.githubusercontent.com/imunited/RockyHub/main/"
+local function fetch(path)
+    local ok,res=pcall(function()
+        return game:HttpGet(base..path)
+    end)
+    if ok and type(res)=="string" and #res>0 then return res end
+    error("Failed to fetch "..path..": "..tostring(res))
+end
+local chunks={}
+for i=1,4 do
+    chunks[i]=fetch("MrRockyDudeHub.part"..i)
+end
+local src=table.concat(chunks,"")
+local fn,err=loadstring(src)
+if not fn then error("MrRockyDudeHub compile error: "..tostring(err)) end
+fn()
